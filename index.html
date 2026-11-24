@@ -8,226 +8,349 @@
 
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
- --gold:#e6b875;
- --cream:#fff0d9;
- --brown:#170904;
- --glass:rgba(255,235,210,.075);
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+  }
 }
+</script>
+
+<style>
+:root {
+ --bg:#100704;
+ --brown:#35150c;
+ --gold:#e5b675;
+ --cream:#fff0dc;
+ --muted:#c4ad96;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
+
 body{
- background:#100704;
+ background:var(--bg);
  color:var(--cream);
  font-family:'DM Sans',sans-serif;
  overflow-x:hidden;
 }
+
 body:before{
  content:"";
  position:fixed;
  inset:0;
  pointer-events:none;
- background:radial-gradient(ellipse at 70% 20%,#55241355,transparent 45%);
  z-index:-1;
+ background:
+ radial-gradient(ellipse at 75% 20%,#71351e66,transparent 40%),
+ radial-gradient(ellipse at 10% 70%,#4c201633,transparent 45%);
 }
+
 nav{
  height:90px;
  padding:0 6%;
  display:flex;
- justify-content:space-between;
  align-items:center;
- border-bottom:1px solid #ffffff18;
- background:#100704d9;
- backdrop-filter:blur(20px);
+ justify-content:space-between;
+ border-bottom:1px solid #ffffff16;
  position:sticky;
  top:0;
- z-index:20;
+ z-index:30;
+ background:#100704df;
+ backdrop-filter:blur(25px);
 }
-.navlogo{
- width:145px;
- height:72px;
+
+.logo{
+ width:155px;
+ height:78px;
  object-fit:contain;
 }
-nav a{
- color:#e9d5bb;
+
+.navlinks{
+ display:flex;
+ gap:35px;
+}
+
+.navlinks a{
+ color:#e9d6bf;
  text-decoration:none;
- margin-left:28px;
- font-size:12px;
+ font-size:11px;
  letter-spacing:2px;
  text-transform:uppercase;
+ transition:.3s;
 }
-nav a:hover{color:var(--gold)}
+.navlinks a:hover{color:var(--gold)}
 
 .hero{
- min-height:750px;
+ min-height:790px;
+ padding:70px 7%;
  display:grid;
- grid-template-columns:1fr 1.15fr;
+ grid-template-columns: .9fr 1.2fr;
  align-items:center;
- padding:65px 7%;
- gap:25px;
+ gap:20px;
 }
-.small-title{
+
+.eyebrow{
  color:var(--gold);
- font-size:11px;
  letter-spacing:5px;
+ font-size:11px;
  text-transform:uppercase;
+ font-weight:700;
 }
+
 h1{
  font-family:'Playfair Display',serif;
- font-size:clamp(55px,7vw,100px);
- line-height:.99;
+ font-size:clamp(60px,7vw,105px);
+ line-height:.96;
+ letter-spacing:-4px;
  margin:25px 0;
- letter-spacing:-3px;
 }
-h1 span{color:var(--gold);font-style:italic}
-.description{
- max-width:440px;
+
+h1 span{
+ color:var(--gold);
+ font-style:italic;
+}
+
+.intro{
+ max-width:450px;
  line-height:1.9;
- color:#c9b49e;
+ color:var(--muted);
  font-size:15px;
 }
-.button{
- border:0;
- padding:17px 28px;
+
+.buttons{
+ display:flex;
+ flex-wrap:wrap;
+ gap:12px;
+ margin-top:35px;
+}
+
+.btn{
+ border:1px solid var(--gold);
+ background:linear-gradient(120deg,#f1cc94,#b77b43);
+ color:#251007;
  border-radius:50px;
- background:linear-gradient(120deg,#f2cb91,#b8783c);
- color:#261006;
+ padding:17px 25px;
  font-weight:700;
- letter-spacing:1.5px;
+ letter-spacing:1px;
  font-size:11px;
  cursor:pointer;
  transition:.3s;
- box-shadow:0 10px 35px #b8783c35;
+ box-shadow:0 10px 35px #b77b4330;
 }
-.button:hover{
+.btn:hover{
  transform:translateY(-4px);
- box-shadow:0 15px 40px #d99b5360;
+ box-shadow:0 15px 40px #b77b4370;
 }
-.outline{
+
+.btn.secondary{
  background:transparent;
- border:1px solid #d9a966;
  color:var(--cream);
  box-shadow:none;
- margin-left:10px;
 }
-.model-area{
- height:580px;
+
+.model-container{
+ height:620px;
  position:relative;
  display:grid;
  place-items:center;
 }
-#chocolate{
- width:100%;
- height:100%;
- cursor:grab;
-}
-#chocolate:active{cursor:grabbing}
+
 .model-glow{
  position:absolute;
- width:400px;
- height:400px;
- background:#a84b1930;
+ width:430px;
+ height:430px;
  border-radius:50%;
- filter:blur(90px);
+ background:#a94d1e44;
+ filter:blur(100px);
  pointer-events:none;
 }
-.model-label{
+
+#chocolateCanvas{
+ width:100%;
+ height:100%;
+ display:block;
+ cursor:grab;
+ touch-action:pan-y;
+ position:relative;
+ z-index:2;
+}
+#chocolateCanvas:active{cursor:grabbing}
+
+.model-hint{
  position:absolute;
- bottom:30px;
- color:#c6a77e;
+ bottom:15px;
+ text-align:center;
+ color:#d6b88e;
+ font-size:10px;
  letter-spacing:3px;
- font-size:10px;
+ z-index:3;
+ width:100%;
+ pointer-events:none;
 }
-.scroll-note{
- color:#bda48c;
+
+.scroll-label{
+ margin-top:35px;
  font-size:10px;
- letter-spacing:2px;
- margin-top:25px;
+ color:#a98e74;
+ letter-spacing:3px;
 }
+
 .section{
- padding:110px 8%;
+ padding:115px 8%;
 }
+
 .section-heading{
  text-align:center;
- margin-bottom:55px;
+ margin-bottom:60px;
 }
+
 .section-heading h2{
- font:600 clamp(42px,6vw,70px) 'Playfair Display',serif;
- margin:18px 0;
+ font:600 clamp(42px,6vw,75px) 'Playfair Display',serif;
+ margin:20px 0;
 }
+
 .section-heading p{
- color:#bfa990;
- max-width:550px;
+ max-width:590px;
  margin:auto;
- line-height:1.8;
+ color:var(--muted);
+ line-height:1.9;
 }
-.cards{
+
+.glass-grid{
  display:grid;
  grid-template-columns:repeat(3,1fr);
  gap:22px;
 }
-.card{
+
+.glass-card{
  padding:35px;
+ min-height:250px;
+ border:1px solid #e6b87530;
  border-radius:25px;
- border:1px solid #e4b77b30;
- background:linear-gradient(145deg,#ffffff13,#ffffff03);
+ background:linear-gradient(145deg,#ffffff15,#ffffff04);
  backdrop-filter:blur(22px);
- box-shadow:inset 0 1px 1px #ffffff15;
- transition:.35s;
+ box-shadow:inset 0 1px #ffffff18,0 20px 50px #0003;
+ transition:.4s;
 }
-.card:hover{
- transform:translateY(-9px);
- border-color:#e6b875;
+
+.glass-card:hover{
+ transform:translateY(-10px);
+ border-color:var(--gold);
 }
-.card .number{
- font:italic 30px Georgia;
+
+.number{
  color:var(--gold);
+ font:italic 30px Georgia;
 }
-.card h3{
+
+.glass-card h3{
  font:600 27px 'Playfair Display',serif;
- margin:23px 0 12px;
+ margin:24px 0 12px;
 }
-.card p{
+
+.glass-card p{
  font-size:13px;
- color:#c4ae97;
- line-height:1.8;
+ line-height:1.9;
+ color:var(--muted);
 }
-.ingredient-preview{
+
+.ingredient-section{
  display:grid;
  grid-template-columns:1fr 1fr;
- gap:60px;
  align-items:center;
+ gap:65px;
 }
-.ingredient-preview h2{
+
+.ingredient-section h2{
  font:600 60px 'Playfair Display',serif;
  margin:20px 0;
 }
-.ingredient-preview p{
- color:#c4ae97;
+
+.ingredient-section p{
+ color:var(--muted);
  line-height:1.9;
 }
-.ingredient-art{
- min-height:350px;
- border:1px solid #d99b5350;
- border-radius:25px;
+
+.ingredient-visual{
+ height:380px;
+ border-radius:30px;
+ border:1px solid #d99b5340;
+ background:radial-gradient(circle,#75391e,#1b0905 70%);
  display:grid;
  place-items:center;
- background:radial-gradient(circle,#70341f,#1c0b06 70%);
- font-size:100px;
+ font-size:115px;
 }
+
+.ingredient-list{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:12px;
+ margin-top:30px;
+}
+
+.ingredient-item{
+ padding:14px;
+ border-bottom:1px solid #ffffff20;
+ font-size:13px;
+ color:#e9d7c1;
+}
+
+.ingredient-item span{
+ color:var(--gold);
+}
+
+.final-section{
+ text-align:center;
+ padding:150px 7%;
+}
+
+.final-section h2{
+ font:600 clamp(45px,7vw,85px) 'Playfair Display',serif;
+ line-height:1.1;
+ margin:25px 0;
+}
+
+.final-section h2 span{color:var(--gold)}
+
 footer{
- padding:40px 7%;
+ padding:65px 7% 35px;
+ text-align:center;
  border-top:1px solid #ffffff20;
- display:flex;
- justify-content:space-between;
- flex-wrap:wrap;
- color:#a98e74;
- font-size:11px;
+ background:#0b0402;
+}
+
+.footer-logo{
+ width:170px;
+ height:100px;
+ object-fit:contain;
+ margin-bottom:15px;
+}
+
+footer h3{
+ font:600 27px 'Playfair Display',serif;
+ color:var(--gold);
  letter-spacing:2px;
 }
 
-/* GLASS INGREDIENT POPUP */
+footer p{
+ color:#b69b7e;
+ font-size:12px;
+ margin-top:12px;
+ line-height:1.8;
+}
+
+.credit{
+ margin-top:35px;
+ padding-top:25px;
+ border-top:1px solid #ffffff17;
+ color:var(--gold);
+ letter-spacing:2px;
+ font-size:12px;
+}
+
+/* Ingredient glass popup */
+
 .modal{
  position:fixed;
  inset:0;
@@ -236,89 +359,110 @@ footer{
  align-items:center;
  justify-content:center;
  padding:20px;
- background:#080301c9;
- backdrop-filter:blur(15px);
+ background:#080301d9;
+ backdrop-filter:blur(20px);
 }
+
 .modal.open{display:flex}
-.modal-box{
+
+.modal-content{
  width:min(850px,100%);
  max-height:85vh;
  overflow-y:auto;
  padding:40px;
- border:1px solid #e7b87565;
- border-radius:25px;
- background:linear-gradient(145deg,#432014ed,#160905f5);
- box-shadow:0 25px 100px #000a,inset 0 1px #ffffff25;
+ border-radius:28px;
+ border:1px solid #e5b67570;
+ background:linear-gradient(145deg,#4a2417f5,#150805f5);
+ box-shadow:0 30px 100px #000a;
  animation:popup .4s ease;
 }
+
 @keyframes popup{
- from{opacity:0;transform:translateY(25px) scale(.97)}
+ from{opacity:0;transform:translateY(30px) scale(.97)}
  to{opacity:1;transform:translateY(0) scale(1)}
 }
-.modal-top{
+
+.modal-header{
  display:flex;
  justify-content:space-between;
  align-items:center;
- margin-bottom:30px;
+ margin-bottom:25px;
 }
-.modal-top h2{
- font:600 38px 'Playfair Display',serif;
+
+.modal-header h2{
+ font:600 36px 'Playfair Display',serif;
 }
+
 .close{
- background:#ffffff12;
- border:1px solid #ffffff30;
+ border:1px solid #ffffff40;
+ background:#ffffff10;
  color:white;
  border-radius:50%;
  width:42px;
  height:42px;
- font-size:22px;
+ font-size:23px;
  cursor:pointer;
 }
-.ingredient-group{
+
+.group{
  padding:22px 0;
  border-bottom:1px solid #ffffff20;
 }
-.ingredient-group h3{
- color:var(--gold);
+
+.group h3{
  font:600 23px 'Playfair Display',serif;
- margin-bottom:14px;
+ color:var(--gold);
+ margin-bottom:15px;
 }
+
 .tags{
  display:flex;
  flex-wrap:wrap;
  gap:9px;
 }
+
 .tag{
+ border:1px solid #ffffff25;
+ background:#ffffff0d;
  padding:10px 14px;
  border-radius:30px;
- background:#ffffff0c;
- border:1px solid #ffffff20;
  font-size:12px;
- color:#f1ddc2;
+ color:#f3dfc7;
 }
-.modal-note{
+
+.note{
+ color:#c4ad96;
  font-size:11px;
- color:#c0a88e;
  line-height:1.8;
- margin-top:22px;
+ margin-top:25px;
 }
+
 .reveal{
  opacity:0;
  transform:translateY(25px);
  transition:.8s;
 }
-.reveal.show{
+.reveal.visible{
  opacity:1;
  transform:translateY(0);
 }
-@media(max-width:800px){
- .hero{grid-template-columns:1fr;padding:65px 6%}
- .model-area{height:430px}
- .cards{grid-template-columns:1fr}
- .ingredient-preview{grid-template-columns:1fr}
- nav a{margin-left:10px;font-size:9px}
- .navlogo{width:100px}
- .modal-box{padding:25px}
+
+@media(max-width:850px){
+ .hero{grid-template-columns:1fr;padding-top:65px}
+ .model-container{height:470px}
+ .glass-grid{grid-template-columns:1fr}
+ .ingredient-section{grid-template-columns:1fr}
+ .navlinks{gap:13px}
+ .navlinks a{font-size:9px}
+ .logo{width:110px}
+}
+
+@media(max-width:500px){
+ .hero{padding-left:6%;padding-right:6%}
+ .model-container{height:380px}
+ .ingredient-section h2{font-size:45px}
+ .modal-content{padding:23px}
+ .modal-header h2{font-size:27px}
 }
 </style>
 </head>
@@ -326,126 +470,242 @@ footer{
 <body>
 
 <nav>
- <img class="navlogo" src="logo.png" alt="Sugarless Shenanigans logo">
- <div>
-  <a href="#story">Our Story</a>
+ <img src="logo.png" class="logo" alt="Sugarless Shenanigans">
+ <div class="navlinks">
+  <a href="#story">Our story</a>
   <a href="#ingredients">Ingredients</a>
+  <a href="#goodness">Our concept</a>
  </div>
 </nav>
+
+<!-- HERO -->
 
 <section class="hero">
 
  <div>
-  <div class="small-title">A different kind of chocolate</div>
+  <div class="eyebrow">A little mischief. A lot of chocolate.</div>
 
   <h1>
-   Chocolate.<br>
-   Without the<br>
-   <span>ordinary.</span>
+   Chocolate<br>
+   taken to<br>
+   <span>another level.</span>
   </h1>
 
-  <p class="description">
-   Introducing Sugarless Shenanigans.
-   A bold chocolate concept combining rich cacao,
-   creamy praline, seeds, berries and carefully
-   selected nutritional ingredients.
+  <p class="intro">
+   Welcome to Sugarless Shenanigans.
+   A bold chocolate concept bringing together
+   rich cacao, creamy textures, seeds,
+   berries and carefully selected ingredients.
   </p>
 
-  <br><br>
+  <div class="buttons">
+   <button class="btn" onclick="openIngredients()">
+    VIEW INGREDIENTS ↗
+   </button>
 
-  <button class="button" onclick="openIngredients()">
-   VIEW INGREDIENTS ↗
-  </button>
+   <button class="btn secondary"
+   onclick="document.querySelector('#story').scrollIntoView({behavior:'smooth'})">
+    DISCOVER MORE
+   </button>
+  </div>
 
-  <button class="button outline" onclick="document.querySelector('#story').scrollIntoView({behavior:'smooth'})">
-   DISCOVER MORE
-  </button>
-
-  <div class="scroll-note">SCROLL TO EXPLORE ↓</div>
+  <div class="scroll-label">SCROLL TO EXPLORE ↓</div>
  </div>
 
- <div class="model-area">
+ <!-- INTERACTIVE 3D CHOCOLATE -->
+
+ <div class="model-container">
   <div class="model-glow"></div>
-  <canvas id="chocolate"></canvas>
-  <div class="model-label">INTERACTIVE 3D CHOCOLATE · DRAG TO ROTATE</div>
+  <canvas id="chocolateCanvas"></canvas>
+  <div class="model-hint">
+   DRAG TO ROTATE · SCROLL TO ZOOM · EXPLORE IN 3D
+  </div>
  </div>
 
 </section>
+
+<!-- BRAND STORY -->
 
 <section class="section" id="story">
+
  <div class="section-heading reveal">
-  <div class="small-title">THE SUGARLESS SHENANIGANS IDEA</div>
-  <h2>Chocolate with character.</h2>
+  <div class="eyebrow">THE IDEA</div>
+  <h2>Not just another chocolate bar.</h2>
   <p>
-   We believe chocolate can be exciting, indulgent
-   and made with thoughtful ingredients.
-   Our concept puts flavour and creativity first.
+   Sugarless Shenanigans is a chocolate concept
+   built around creativity, rich flavour and
+   interesting ingredients.
   </p>
  </div>
 
- <div class="cards">
-  <div class="card reveal">
+ <div class="glass-grid">
+
+  <div class="glass-card reveal">
    <div class="number">01</div>
    <h3>Rich cacao</h3>
-   <p>Deep cacao flavour and smooth cocoa butter create the foundation of our chocolate.</p>
+   <p>
+    A deep chocolate foundation made with
+    cocoa butter and natural cacao.
+   </p>
   </div>
 
-  <div class="card reveal">
+  <div class="glass-card reveal">
    <div class="number">02</div>
-   <h3>Superfood mix</h3>
-   <p>Seeds, berries, nuts and plant ingredients add texture and variety.</p>
+   <h3>Unexpected ingredients</h3>
+   <p>
+    Seeds, berries, nuts and other
+    plant-based ingredients bring variety
+    and texture.
+   </p>
   </div>
 
-  <div class="card reveal">
+  <div class="glass-card reveal">
    <div class="number">03</div>
    <h3>Thoughtful nutrition</h3>
-   <p>A proposed combination of vitamins, minerals, fibre and naturally occurring plant compounds.</p>
+   <p>
+    Exploring fibre, naturally occurring
+    nutrients, vitamins and minerals.
+   </p>
   </div>
+
  </div>
 </section>
+
+<!-- INGREDIENTS -->
 
 <section class="section" id="ingredients">
- <div class="ingredient-preview">
+
+ <div class="ingredient-section">
+
   <div class="reveal">
-   <div class="small-title">WHAT GOES INSIDE</div>
-   <h2>Good ingredients.<br>Great chocolate.</h2>
+   <div class="eyebrow">THE INGREDIENT COLLECTION</div>
+   <h2>Good things<br>go inside.</h2>
+
    <p>
-    From organic cocoa butter to blueberries,
-    chia seeds and natural vanilla, every
-    ingredient has a place in the concept.
+    From high-flavanol cacao to chia seeds
+    and freeze-dried berries, our proposed
+    formulation explores a wide range
+    of interesting ingredients.
    </p>
+
+   <div class="ingredient-list">
+    <div class="ingredient-item"><span>01.</span> Cacao</div>
+    <div class="ingredient-item"><span>02.</span> Cocoa butter</div>
+    <div class="ingredient-item"><span>03.</span> Almond butter</div>
+    <div class="ingredient-item"><span>04.</span> Chia seeds</div>
+    <div class="ingredient-item"><span>05.</span> Flaxseed</div>
+    <div class="ingredient-item"><span>06.</span> Blueberries</div>
+   </div>
+
    <br>
-   <button class="button" onclick="openIngredients()">EXPLORE ALL INGREDIENTS ↗</button>
+   <button class="btn" onclick="openIngredients()">
+    VIEW ALL INGREDIENTS ↗
+   </button>
   </div>
-  <div class="ingredient-art reveal">🍫</div>
+
+  <div class="ingredient-visual reveal">
+   🍫
+  </div>
+
  </div>
 </section>
 
-<section class="section">
+<!-- GOODNESS -->
+
+<section class="section" id="goodness">
+
  <div class="section-heading reveal">
-  <div class="small-title">OUR PHILOSOPHY</div>
-  <h2>A little less ordinary.<br><span style="color:#e6b875">A lot more interesting.</span></h2>
-  <p>Welcome to Sugarless Shenanigans.</p>
+  <div class="eyebrow">THE NUTRITION CONCEPT</div>
+  <h2>More to discover.</h2>
+  <p>
+   The proposed formulation explores
+   different vitamins, minerals and
+   naturally occurring nutrients.
+  </p>
+ </div>
+
+ <div class="glass-grid">
+
+  <div class="glass-card reveal">
+   <div class="number">A</div>
+   <h3>Vitamins</h3>
+   <p>
+    A, B-complex, C, D, E and K vitamins
+    are included in the proposed
+    nutritional concept.
+   </p>
+  </div>
+
+  <div class="glass-card reveal">
+   <div class="number">B</div>
+   <h3>Minerals</h3>
+   <p>
+    Magnesium, calcium, iron, zinc,
+    potassium, selenium and other
+    essential minerals.
+   </p>
+  </div>
+
+  <div class="glass-card reveal">
+   <div class="number">C</div>
+   <h3>Plant nutrients</h3>
+   <p>
+    Omega-3 ALA, fibre, plant protein,
+    cocoa flavanols and berry
+    polyphenols.
+   </p>
+  </div>
+
  </div>
 </section>
+
+<!-- ENDING -->
+
+<section class="final-section">
+ <div class="eyebrow reveal">SUGARLESS SHENANIGANS</div>
+
+ <h2 class="reveal">
+  A little less ordinary.<br>
+  <span>A lot more delicious.</span>
+ </h2>
+
+ <p class="reveal" style="color:#c4ad96">
+  Chocolate with character.
+ </p>
+
+ <br><br>
+
+ <button class="btn reveal" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  BACK TO THE TOP ↑
+ </button>
+</section>
+
+<!-- FOOTER -->
 
 <footer>
- <span>SUGARLESS SHENANIGANS</span>
- <span>CHOCOLATE WITH CHARACTER.</span>
- <span>2026</span>
+ <img src="logo.png" class="footer-logo" alt="Sugarless Shenanigans logo">
+
+ <h3>SUGARLESS SHENANIGANS</h3>
+ <p>Chocolate with character.</p>
+
+ <div class="credit">
+  WEBSITE DESIGNED BY MOHAMMAD HASSAN
+  <p>© 2026 · ALL RIGHTS RESERVED</p>
+ </div>
 </footer>
 
 <!-- INGREDIENT POPUP -->
 
 <div class="modal" id="ingredientModal" onclick="outsideClose(event)">
- <div class="modal-box">
 
-  <div class="modal-top">
+ <div class="modal-content">
+
+  <div class="modal-header">
    <h2>Inside the chocolate.</h2>
    <button class="close" onclick="closeIngredients()">×</button>
   </div>
 
-  <div class="ingredient-group">
+  <div class="group">
    <h3>01. Chocolate foundation</h3>
    <div class="tags">
     <span class="tag">Organic cocoa butter</span>
@@ -459,8 +719,8 @@ footer{
    </div>
   </div>
 
-  <div class="ingredient-group">
-   <h3>02. Seeds, nuts & fibre</h3>
+  <div class="group">
+   <h3>02. Seeds, nuts and fibre</h3>
    <div class="tags">
     <span class="tag">Ground flaxseed</span>
     <span class="tag">Chia seeds</span>
@@ -473,8 +733,8 @@ footer{
    </div>
   </div>
 
-  <div class="ingredient-group">
-   <h3>03. Berries & superfoods</h3>
+  <div class="group">
+   <h3>03. Berries and superfoods</h3>
    <div class="tags">
     <span class="tag">Blueberries</span>
     <span class="tag">Strawberries</span>
@@ -483,10 +743,11 @@ footer{
     <span class="tag">Matcha</span>
     <span class="tag">Turmeric</span>
     <span class="tag">Ginger</span>
+    <span class="tag">Pumpkin protein</span>
    </div>
   </div>
 
-  <div class="ingredient-group">
+  <div class="group">
    <h3>04. Vitamins</h3>
    <div class="tags">
     <span class="tag">Vitamin A</span>
@@ -505,8 +766,8 @@ footer{
    </div>
   </div>
 
-  <div class="ingredient-group">
-   <h3>05. Essential minerals</h3>
+  <div class="group">
+   <h3>05. Minerals</h3>
    <div class="tags">
     <span class="tag">Magnesium</span>
     <span class="tag">Calcium</span>
@@ -521,7 +782,7 @@ footer{
    </div>
   </div>
 
-  <div class="ingredient-group">
+  <div class="group">
    <h3>06. Naturally occurring nutrients</h3>
    <div class="tags">
     <span class="tag">Omega-3 ALA</span>
@@ -534,16 +795,17 @@ footer{
    </div>
   </div>
 
-  <p class="modal-note">
-   This is the proposed ingredient concept, not a verified final recipe.
-   Some ingredients are optional alternatives and would not necessarily
-   all be included in one chocolate bar. Nuts are allergens.
-   Vitamin and mineral quantities, safety and nutrition claims must
-   be professionally assessed and tested before sale.
+  <p class="note">
+   This is a proposed ingredient collection, not a verified
+   final recipe. Some ingredients are optional alternatives
+   and would not necessarily all be combined in one bar.
+   Nuts are allergens. Vitamin and mineral quantities,
+   nutrition claims and product safety require professional
+   formulation and testing.
   </p>
 
   <br>
-  <button class="button" onclick="closeIngredients()">CLOSE INGREDIENTS</button>
+  <button class="btn" onclick="closeIngredients()">CLOSE</button>
 
  </div>
 </div>
@@ -553,13 +815,16 @@ function openIngredients(){
  document.getElementById('ingredientModal').classList.add('open');
  document.body.style.overflow='hidden';
 }
+
 function closeIngredients(){
  document.getElementById('ingredientModal').classList.remove('open');
  document.body.style.overflow='';
 }
+
 function outsideClose(e){
  if(e.target.id==='ingredientModal')closeIngredients();
 }
+
 document.addEventListener('keydown',e=>{
  if(e.key==='Escape')closeIngredients();
 });
@@ -567,210 +832,225 @@ document.addEventListener('keydown',e=>{
 const observer=new IntersectionObserver(entries=>{
  entries.forEach(entry=>{
   if(entry.isIntersecting){
-   entry.target.classList.add('show');
+   entry.target.classList.add('visible');
    observer.unobserve(entry.target);
   }
  });
 },{threshold:.12});
+
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 </script>
 
-<!-- ACTUAL 3D CHOCOLATE MODEL -->
+<!-- THREE.JS INTERACTIVE CHOCOLATE MODEL -->
+
 <script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+import * as THREE from 'three';
 import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 import {RoundedBoxGeometry} from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/geometries/RoundedBoxGeometry.js';
 
-const canvas=document.getElementById('chocolate');
+const canvas=document.getElementById('chocolateCanvas');
 
 const scene=new THREE.Scene();
 
-const camera=new THREE.PerspectiveCamera(36,1,.1,100);
-camera.position.set(5,4.2,7.5);
+const camera=new THREE.PerspectiveCamera(35,1,.1,100);
+camera.position.set(5,4.5,7.5);
 
 const renderer=new THREE.WebGLRenderer({
  canvas,
- alpha:true,
- antialias:true
+ antialias:true,
+ alpha:true
 });
+
 renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
 renderer.outputColorSpace=THREE.SRGBColorSpace;
 renderer.toneMapping=THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure=1.2;
+renderer.toneMappingExposure=1.3;
 
+// Real interactive mouse/touch controls.
 const controls=new OrbitControls(camera,canvas);
 controls.enableDamping=true;
-controls.dampingFactor=.06;
+controls.dampingFactor=.07;
 controls.enablePan=false;
-controls.minDistance=5;
-controls.maxDistance=11;
+controls.minDistance=4.5;
+controls.maxDistance=12;
 controls.autoRotate=true;
-controls.autoRotateSpeed=.65;
+controls.autoRotateSpeed=.7;
 
-scene.add(new THREE.HemisphereLight(0xffe8ce,0x170704,2));
+// Lighting.
+scene.add(new THREE.HemisphereLight(0xffe8cc,0x1a0804,2));
 
-const goldLight=new THREE.DirectionalLight(0xffd5a0,4);
-goldLight.position.set(5,8,6);
-scene.add(goldLight);
+const keyLight=new THREE.DirectionalLight(0xffd39a,4.5);
+keyLight.position.set(5,8,6);
+scene.add(keyLight);
 
-const frontLight=new THREE.PointLight(0xffa65d,30,20);
-frontLight.position.set(-4,3,4);
-scene.add(frontLight);
-
-const sideLight=new THREE.PointLight(0xffe4bc,25,20);
-sideLight.position.set(3,-1,-5);
+const sideLight=new THREE.PointLight(0xff9c53,35,20);
+sideLight.position.set(-5,3,4);
 scene.add(sideLight);
 
-const chocolateMaterial=new THREE.MeshPhysicalMaterial({
- color:0x512316,
- roughness:.19,
- metalness:.04,
- clearcoat:1,
- clearcoatRoughness:.08
-});
+const backLight=new THREE.PointLight(0xffe4bf,25,20);
+backLight.position.set(3,2,-5);
+scene.add(backLight);
 
-const darkChocolate=new THREE.MeshPhysicalMaterial({
- color:0x35140d,
- roughness:.16,
+// Materials.
+const chocolateMaterial=new THREE.MeshPhysicalMaterial({
+ color:0x572718,
+ roughness:.17,
+ metalness:.03,
  clearcoat:1,
  clearcoatRoughness:.07
 });
 
-const goldMaterial=new THREE.MeshStandardMaterial({
- color:0xdba35f,
- metalness:.7,
- roughness:.24
+const baseMaterial=new THREE.MeshPhysicalMaterial({
+ color:0x35150d,
+ roughness:.2,
+ clearcoat:1,
+ clearcoatRoughness:.1
 });
 
-const bar=new THREE.Group();
-scene.add(bar);
+const dripMaterial=new THREE.MeshPhysicalMaterial({
+ color:0x71321c,
+ roughness:.11,
+ clearcoat:1,
+ clearcoatRoughness:.04
+});
 
-// Solid chocolate base.
+// Main chocolate bar group.
+const chocolate=new THREE.Group();
+scene.add(chocolate);
+
+// Main solid chocolate body.
 const base=new THREE.Mesh(
- new RoundedBoxGeometry(4.5,.48,2.85,8,.18),
- darkChocolate
+ new RoundedBoxGeometry(4.7,.48,3.0,8,.18),
+ baseMaterial
 );
 base.position.y=0;
-bar.add(base);
+base.castShadow=true;
+chocolate.add(base);
 
-// Create 12 individually moulded chocolate squares.
-const tileGeometry=new RoundedBoxGeometry(1.04,.25,.85,6,.105);
-
+// 12 individually rounded chocolate segments.
 for(let x=0;x<4;x++){
  for(let z=0;z<3;z++){
 
-  const tile=new THREE.Mesh(tileGeometry,chocolateMaterial);
+  const segment=new THREE.Mesh(
+   new RoundedBoxGeometry(1.08,.26,.91,8,.12),
+   chocolateMaterial
+  );
 
-  tile.position.set(
+  segment.position.set(
    -1.62+x*1.08,
    .34,
    -.96+z*.96
   );
 
-  tile.castShadow=true;
-  tile.receiveShadow=true;
-  bar.add(tile);
+  segment.castShadow=true;
+  segment.receiveShadow=true;
 
-  // Subtle raised border on each piece.
-  const border=new THREE.Mesh(
-   new RoundedBoxGeometry(1.075,.035,.885,5,.08),
-   new THREE.MeshStandardMaterial({
-    color:0x713720,
-    roughness:.3
-   })
-  );
-  border.position.set(tile.position.x,.465,tile.position.z);
-  bar.add(border);
+  chocolate.add(segment);
  }
 }
 
-// Embossed SS brand mark on the central piece.
-const markCanvas=document.createElement('canvas');
-markCanvas.width=512;
-markCanvas.height=512;
-const ctx=markCanvas.getContext('2d');
-ctx.clearRect(0,0,512,512);
-ctx.fillStyle='#e8bd80';
-ctx.font='bold 190px Georgia';
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-ctx.fillText('SS',256,260);
+// Add a subtle engraved SS emblem on a centre segment.
+const emblemCanvas=document.createElement('canvas');
+emblemCanvas.width=512;
+emblemCanvas.height=512;
 
-const markTexture=new THREE.CanvasTexture(markCanvas);
-markTexture.colorSpace=THREE.SRGBColorSpace;
+const context=emblemCanvas.getContext('2d');
+context.clearRect(0,0,512,512);
+context.fillStyle='#e5b675';
+context.font='bold 180px Georgia';
+context.textAlign='center';
+context.textBaseline='middle';
+context.fillText('SS',256,256);
 
-const brandMark=new THREE.Mesh(
- new THREE.PlaneGeometry(.5,.5),
+const emblemTexture=new THREE.CanvasTexture(emblemCanvas);
+emblemTexture.colorSpace=THREE.SRGBColorSpace;
+
+const emblem=new THREE.Mesh(
+ new THREE.PlaneGeometry(.48,.48),
  new THREE.MeshBasicMaterial({
-  map:markTexture,
+  map:emblemTexture,
   transparent:true,
   side:THREE.DoubleSide
  })
 );
-brandMark.rotation.x=-Math.PI/2;
-brandMark.position.set(0,.49,0);
-bar.add(brandMark);
 
-// Flowing glossy chocolate drops around the edge.
-for(let i=0;i<8;i++){
- const radius=.09+(i%3)*.035;
- const drop=new THREE.Mesh(
-  new THREE.SphereGeometry(radius,32,24),
-  chocolateMaterial
- );
- drop.scale.y=2.4;
- drop.position.set(
-  -1.9+i*.54,
-  -.29-(i%2)*.06,
-  -1.42
- );
- bar.add(drop);
+emblem.rotation.x=-Math.PI/2;
+emblem.position.set(0,.475,0);
+chocolate.add(emblem);
+
+// Chocolate drips around the edges.
+function makeDrip(x,y,z,scale){
+ const geometry=new THREE.SphereGeometry(1,32,24);
+ const drip=new THREE.Mesh(geometry,dripMaterial);
+ drip.position.set(x,y,z);
+ drip.scale.set(scale*.65,scale*1.9,scale*.65);
+ drip.castShadow=true;
+ chocolate.add(drip);
 }
 
-// Add a decorative floating golden ring.
+// Front edge drips.
+for(let i=0;i<8;i++){
+ makeDrip(-1.9+i*.53,-.34,-1.48,.12+(i%3)*.035);
+}
+
+// Side edge drips.
+for(let i=0;i<5;i++){
+ makeDrip(2.34,-.32,-.95+i*.46,.13);
+}
+
+// Thin decorative golden line around the bar.
+const goldMaterial=new THREE.MeshStandardMaterial({
+ color:0xdba65f,
+ metalness:.65,
+ roughness:.3
+});
+
 const ring=new THREE.Mesh(
- new THREE.TorusGeometry(2.8,.012,12,150),
- new THREE.MeshBasicMaterial({
-  color:0xd99b53,
-  transparent:true,
-  opacity:.35
- })
+ new THREE.TorusGeometry(2.85,.012,12,160),
+ goldMaterial
 );
-ring.rotation.x=1.25;
-ring.position.y=-.4;
-bar.add(ring);
+ring.rotation.x=1.2;
+ring.position.y=-.45;
+chocolate.add(ring);
 
-bar.rotation.x=-.16;
-bar.rotation.z=-.12;
-
-// Animation.
+// Floating animation setup.
 const clock=new THREE.Clock();
 
+chocolate.rotation.x=-.2;
+chocolate.rotation.z=-.12;
+
+// Responsive sizing.
 function resize(){
  const width=canvas.clientWidth;
  const height=canvas.clientHeight;
+
  if(!width||!height)return;
+
  renderer.setSize(width,height,false);
  camera.aspect=width/height;
  camera.updateProjectionMatrix();
 }
+
 new ResizeObserver(resize).observe(canvas);
 resize();
 
+// Animation loop.
 function animate(){
+
  requestAnimationFrame(animate);
 
- const t=clock.getElapsedTime();
+ const time=clock.getElapsedTime();
 
  // Gentle floating movement.
- bar.position.y=Math.sin(t*1.1)*.10;
+ chocolate.position.y=Math.sin(time*1.1)*.12;
 
- // Subtle rotation.
- bar.rotation.z=-.12+Math.sin(t*.5)*.025;
+ // Small natural tilt.
+ chocolate.rotation.z=-.12+Math.sin(time*.55)*.025;
 
  controls.update();
  renderer.render(scene,camera);
 }
+
 animate();
 </script>
 
